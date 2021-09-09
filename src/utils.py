@@ -3,7 +3,7 @@ import os
 import pickle
 import yaml
 
-
+"""pickle for load and read using seriallization"""
 def pload(*f_names):
     """Pickle load"""
     f_name = os.path.join(*f_names)
@@ -22,7 +22,7 @@ def mkdir(*paths):
     path = os.path.join(*paths)
     if not os.path.exists(path):
         os.mkdir(path)
-
+"""yaml load and dump .yml file"""
 def yload(*f_names):
     """YAML load"""
     f_name = os.path.join(*f_names)
@@ -35,7 +35,7 @@ def ydump(yaml_dict, *f_names):
     f_name = os.path.join(*f_names)
     with open(f_name, 'w') as f:
         yaml.dump(yaml_dict, f, default_flow_style=False)
-
+""" torch.einsum for differient matrix operations by directly assuming dimension"""
 def bmv(mat, vec):
     """batch matrix vector product"""
     return torch.einsum('bij, bj -> bi', mat, vec)
