@@ -8,7 +8,7 @@ class SO3:
     Id = torch.eye(3).cuda().float()
     dId = torch.eye(3).cuda().double()
 
-    @classmethod
+    @classmethod # cls: class
     def exp(cls, phi):
         angle = phi.norm(dim=1, keepdim=True)
         mask = angle[:, 0] < cls.TOL
@@ -16,7 +16,7 @@ class SO3:
         Id = cls.Id.expand(dim_batch, 3, 3)
 
         axis = phi[~mask] / angle[~mask]
-        c = angle[~mask].cos().unsqueeze(2)
+        c = angle[~mask].cos().unsqueeze(2)# add a 1 on second dimension
         s = angle[~mask].sin().unsqueeze(2)
 
         Rot = phi.new_empty(dim_batch, 3, 3)
@@ -30,7 +30,7 @@ class SO3:
         dim_batch = Rot.shape[0]
         Id = cls.Id.expand(dim_batch, 3, 3)
 
-        cos_angle = (0.5 * cls.btrace(Rot) - 0.5).clamp(-1., 1.)
+        cos_angle = (0.5 * cls.btrace(Rot) - 0.5).clamp(-1., 1.) #min:-1, max:+1
         # Clip cos(angle) to its proper domain to avoid NaNs from rounding
         # errors
         angle = cos_angle.acos()
@@ -63,14 +63,14 @@ class SO3:
                             3, 3)
 
     @classmethod
-    def from_rpy(cls, roll, pitch, yaw):
-        return cls.rotz(yaw).bmm(cls.roty(pitch).bmm(cls.rotx(roll)))
+    def from_rpy(cls, roll, pitch, yaw):# rotation sequence z y' x''
+        return cls.rotz(yaw).bmm(cls.roty(pitch).bmm(cls.rotx(roll)))# tensor.bmm: batch matrix-matrix product,bij * bjk = bik
 
     @classmethod
     def rotx(cls, angle_in_radians):
         c = angle_in_radians.cos()
         s = angle_in_radians.sin()
-        mat = c.new_zeros((c.shape[0], 3, 3))
+        mat = c.new_zeros((c.shape[0], 3, 3))# is it the dim of c or (c.shape[0],3,3), should be latter one
         mat[:, 0, 0] = 1
         mat[:, 1, 1] = c
         mat[:, 2, 2] = c
@@ -198,7 +198,7 @@ class SO3:
 
             if len(cond1_inds) > 0:
                 cond1_inds = cond1_inds.squeeze()
-                R_cond1 = Rots[cond1_inds].view(-1, 3, 3)
+                R_cond1 = Rots[cond1_inds].view(-1, 3, 3) #.view() is subset of .reshape()
                 d = 2. * torch.sqrt(1. + R_cond1[:, 0, 0] -
                     R_cond1[:, 1, 1] - R_cond1[:, 2, 2]).view(-1)
                 qw[cond1_inds] = (R_cond1[:, 2, 1] - R_cond1[:, 1, 2]) / d
