@@ -79,7 +79,7 @@ class GyroNet(BaseNet):
 
     def forward(self, us):
         ys = super().forward(us)
-        Rots = (self.Id3 + self.gyro_Rot).expand(us.shape[0], us.shape[1], 3, 3)
+        Rots = (self.Id3 + self.gyro_Rot).expand(us.shape[0], us.shape[1], 3, 3) # random noise on Rot
         Rot_us = bbmv(Rots, us[:, :, :3])
-        return self.gyro_std*ys.transpose(1, 2) + Rot_us
+        return self.gyro_std*ys.transpose(1, 2) + Rot_us #？？？ 
 
