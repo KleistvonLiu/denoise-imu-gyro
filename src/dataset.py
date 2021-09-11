@@ -90,8 +90,8 @@ class BaseDataset(Dataset):
         self._train = False
         self._val = True
 
-    def length(self):
-        return self._length
+    def length(self): 
+        return self._length # ？？？
 
     def load_seq(self, i):
         return pload(self.predata_dir, self.sequences[i] + '.p')
@@ -212,7 +212,7 @@ class EUROCDataset(BaseDataset):
             t_end = np.min([gt[-1, 0], imu[-1, 0]])
 
             # start index
-            idx0_imu = np.searchsorted(imu[:, 0], t0)
+            idx0_imu = np.searchsorted(imu[:, 0], t0) #Find indices where elements should be inserted to maintain order.
             idx0_gt = np.searchsorted(gt[:, 0], t0)
 
             # end index
@@ -228,7 +228,7 @@ class EUROCDataset(BaseDataset):
             gt = self.interpolate(gt, gt[:, 0]/1e9, ts)
 
             # take ground truth position
-            p_gt = gt[:, 1:4]
+            p_gt = gt[:, 1:4] #doesn't take 4th element 
             p_gt = p_gt - p_gt[0]
 
             # take ground true quaternion pose
