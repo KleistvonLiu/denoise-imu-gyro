@@ -74,7 +74,7 @@ class GyroNet(BaseNet):
         self.gyro_std = torch.nn.Parameter(gyro_std, requires_grad=False)
 
         gyro_Rot = 0.05*torch.randn(3, 3).cuda()
-        self.gyro_Rot = torch.nn.Parameter(gyro_Rot)
+        self.gyro_Rot = torch.nn.Parameter(gyro_Rot)# !! C, and set it as parameter to optimize?
         self.Id3 = torch.eye(3).cuda()
 
     def forward(self, us):
