@@ -24,7 +24,7 @@ class BaseNet(torch.nn.Module):
         d1 = ds[1]
         d2 = ds[2]
         # padding
-        p0 = (k0-1) + d0*(k1-1) + d0*d1*(k2-1) + d0*d1*d2*(k3-1)
+        p0 = (k0-1) + d0*(k1-1) + d0*d1*(k2-1) + d0*d1*d2*(k3-1)#510，make up for dilation in NN
         # nets
         self.cnn = torch.nn.Sequential(
             torch.nn.ReplicationPad1d((p0, 0)), # padding at start
@@ -81,5 +81,5 @@ class GyroNet(BaseNet):
         ys = super().forward(us)
         Rots = (self.Id3 + self.gyro_Rot).expand(us.shape[0], us.shape[1], 3, 3) # random noise on Rot
         Rot_us = bbmv(Rots, us[:, :, :3])
-        return self.gyro_std*ys.transpose(1, 2) + Rot_us #？？？ 
+        return self.gyro_std*ys.transpose(1, 2) + Rot_us #fomula 5,(3,1)*()???
 
